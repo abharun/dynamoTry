@@ -21,7 +21,7 @@ export const getone = async (id: string) => {
   return result.Item || null;
 };
 
-export const create = async (post: Post) => {
+export const insert = async (post: Post) => {
     const id = uuid();
     const item = { id, ...post };
     await postDocClient.put({
