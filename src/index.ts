@@ -4,7 +4,7 @@ import { Logger } from "./utils";
 import { SERVER_STARTED } from "./consts/messages";
 import appRouter from "./routes";
 import cors from "cors";
-import { createTable } from "./services/dbMigration";
+import { createTables } from "./db";
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ app
 
 const PORT = process.env.PORT || 4000;
 
-// createTable("posts");
+createTables(["posts"]);
 
 app.listen(PORT, () => {
     Logger.info(SERVER_STARTED);
