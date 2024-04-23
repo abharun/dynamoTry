@@ -31,6 +31,14 @@ export const create = async (post: Post) => {
     return item;
 };
 
-export const update = async () => {};
+export const update = async (id: string, post: Post) => {};
 
-export const remove = async () => {};
+export const remove = async (id: string) => {
+    const result = await postDocClient.delete({
+        TableName: tableName,
+        Key: { id },
+        ReturnValues: "ALL_OLD",
+    }).promise();
+
+    return result;
+};
