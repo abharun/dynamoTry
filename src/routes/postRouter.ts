@@ -5,7 +5,7 @@ import {
   getAllPosts,
   getPost,
   updatePost,
-} from "../controllers/postController";
+} from "../controllers";
 
 const router = Router();
 

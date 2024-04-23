@@ -6,7 +6,14 @@ import {} from "uuid";
 const postDocClient = new DynamoDB.DocumentClient(dbConfig);
 const tableName = "posts";
 
-export const getall = async () => {};
+export const getall = async () => {
+    const params = {
+        TableName: tableName,
+    };
+
+    const result = await postDocClient.scan(params);
+    return result;
+};
 
 export const getone = async () => {};
 
