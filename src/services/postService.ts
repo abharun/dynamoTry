@@ -1,40 +1,44 @@
-import { DynamoDB, Credentials } from "aws-sdk";
+import { DynamoDB } from "aws-sdk";
 import { Post } from "../types";
+import { dbConfig } from "../db";
+import { v4 as uuid } from "uuid";
 
+const postDocClient = new DynamoDB.DocumentClient(dbConfig);
 const tableName = "posts";
 
-const endpoint = "http://localhost:8000";
-const region = "us-west-2";
+export const getall = async () => {
+  const result = await postDocClient.scan({
+    TableName: tableName,
+  }).promise();
+  return result;
+};
 
-const credentials = new Credentials('dummy', 'dummy', 'dummy');
-const dynamoDB = new DynamoDB.DocumentClient({endpoint: endpoint, region: region, credentials: credentials});
+export const getone = async (id: string) => {
+  const result = await postDocClient.get({
+    TableName: tableName,
+    Key: { id },
+  }).promise();
+  return result.Item || null;
+};
 
-export const getAllPosts = async () => {
-    const params = {
+export const insert = async (post: Post) => {
+    const id = uuid();
+    const item = { id, ...post };
+    await postDocClient.put({
         TableName: tableName,
-    };
+        Item: item,
+    }).promise();
+    return item;
+};
 
-    try {
-        const result = await dynamoDB.scan(params).promise();
-        return result;
-    } catch (err) {
-        console.error("Error on fetching posts: ", err);
-        throw err;
-    }
-}
+export const update = async (id: string, post: Post) => {};
 
-export const createPost = async (postData: Post) => {
-    const params = {
+export const remove = async (id: string) => {
+    const result = await postDocClient.delete({
         TableName: tableName,
-        Item: {id: "newid", ...postData},
-    };
+        Key: { id },
+        ReturnValues: "ALL_OLD",
+    }).promise();
 
-    try {
-        const result = await dynamoDB.put(params).promise();
-        console.log("Post created successfully:", result);
-        return result;
-    } catch (err) {
-        console.error("Error on creating a post: ", err);
-        throw err;
-    }
-}
+    return result;
+};
