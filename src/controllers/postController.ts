@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 import { Post } from "../types";
-import { getall } from "../services";
+import { getall, getone } from "../services";
 
 export const getAllPosts = (_req: Request, res: Response) => {
     const posts = getall();
     res.status(200).send(posts);
 }
 
-export const getPost = (req: Request, res: Response) => {}
+export const getPost = (req: Request, res: Response) => {
+    const id = req.params.id;
+    const post = getone(id);
+}
+
 export const createPost = (req: Request, res: Response) => {}
 export const updatePost = (req: Request, res: Response) => {}
 export const deletePost = (req: Request, res: Response) => {}

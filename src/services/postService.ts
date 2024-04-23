@@ -1,23 +1,35 @@
 import { DynamoDB } from "aws-sdk";
 import { Post } from "../types";
 import { dbConfig } from "../db";
-import {} from "uuid";
+import { v4 as uuid } from "uuid";
 
 const postDocClient = new DynamoDB.DocumentClient(dbConfig);
 const tableName = "posts";
 
 export const getall = async () => {
-    const params = {
-        TableName: tableName,
-    };
-
-    const result = await postDocClient.scan(params);
-    return result;
+  const result = await postDocClient.scan({
+    TableName: tableName,
+  }).promise();
+  return result;
 };
 
-export const getone = async () => {};
+export const getone = async (id: string) => {
+  const result = await postDocClient.get({
+    TableName: tableName,
+    Key: { id },
+  }).promise();
+  return result.Item || null;
+};
 
-export const create = async () => {};
+export const create = async (post: Post) => {
+    const id = uuid();
+    const item = { id, ...post };
+    await postDocClient.put({
+        TableName: tableName,
+        Item: item,
+    }).promise();
+    return item;
+};
 
 export const update = async () => {};
 
