@@ -1,26 +1,27 @@
 import { Request, Response } from "express";
 import { Post } from "../types";
-import { getall, getone, insert } from "../services";
+import { getall, getone, insert, remove } from "../services";
 
-export const getAllPosts = (_req: Request, res: Response) => {
-  const posts = getall();
+export const getAllPosts = async (_req: Request, res: Response) => {
+  const posts = await getall();
   res.status(200).send(posts);
 };
 
-export const getPost = (req: Request, res: Response) => {
+export const getPost = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const post = getone(id);
+  const post = await getone(id);
+  res.status(200).send(post);
 };
 
-export const createPost = (req: Request, res: Response) => {
+export const createPost = async (req: Request, res: Response) => {
     const { title, author, field, content } = req.body;
-    const result = insert({title, author, field, content});
+    const result = await insert({title, author, field, content});
     res.status(200).send(result);
 };
 
-export const updatePost = (req: Request, res: Response) => {};
+export const updatePost = async (req: Request, res: Response) => {};
 
-export const deletePost = (req: Request, res: Response) => {
-  const result = delete(req.params.id);
+export const deletePost = async (req: Request, res: Response) => {
+  const result = await remove(req.params.id);
   res.status(200).send(result);
 };
