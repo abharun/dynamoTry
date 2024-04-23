@@ -1,5 +1,5 @@
 import { DynamoDB } from "aws-sdk";
-import { Post } from "../types";
+import { Post, UpdatePost } from "../types";
 import { dbConfig } from "../db";
 import { v4 as uuid } from "uuid";
 
@@ -31,7 +31,23 @@ export const insert = async (post: Post) => {
     return item;
 };
 
-export const update = async (id: string, post: Post) => {};
+export const update = async (updatedPost: UpdatePost) => {
+  const params = {
+    TableName: tableName,
+    Key: { id: updatedPost.id },
+    UpdateExpression: "SET title = :title, author = :author, field = :field, content = :content",
+    ExpressionAttributeValues: {
+      ":title": updatedPost.title,
+      ":author": updatedPost.author,
+      ":field": updatedPost.field,
+      ":content": updatedPost.content,
+    },
+    ReturnValues: "ALL_NEW",
+  };
+
+  const result = await postDocClient.update(params).promise();
+  return result;
+};
 
 export const remove = async (id: string) => {
     const result = await postDocClient.delete({
