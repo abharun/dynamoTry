@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  createMock,
   createPost,
   deletePost,
   getAllPosts,
@@ -16,5 +17,6 @@ router.post("/", createPost);
 router.put("/", updatePost);
 router.delete("/:id", deletePost);
 router.post("/search", queryPost);
+router.post("/mock", createMock);
 
 export default router;

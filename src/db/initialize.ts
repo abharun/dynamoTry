@@ -13,11 +13,11 @@ export const createTables = async (tableNames: string[]) => {
           TableName: tbname,
           KeySchema: [
             { AttributeName: "id", KeyType: "HASH" },
-            { AttributeName: "timestamp", KeyType: "RANGE" },
+            // { AttributeName: "timestamp", KeyType: "RANGE" },
           ],
           AttributeDefinitions: [
             { AttributeName: "id", AttributeType: "S" },
-            { AttributeName: "timestamp", AttributeType: "N" },
+            // { AttributeName: "timestamp", AttributeType: "N" },
             { AttributeName: "field", AttributeType: "S" },
           ],
           ProvisionedThroughput: {
