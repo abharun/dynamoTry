@@ -12,11 +12,29 @@ export const createTables = async (tableNames: string[]) => {
         const params = {
           TableName: tbname,
           KeySchema: [{ AttributeName: "id", KeyType: "HASH" }],
-          AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }],
+          AttributeDefinitions: [
+            { AttributeName: "id", AttributeType: "S" },
+            { AttributeName: "field", AttributeType: "S" },
+          ],
           ProvisionedThroughput: {
             ReadCapacityUnits: 5,
             WriteCapacityUnits: 5,
           },
+          GlobalSecondaryIndexes: [
+            {
+              IndexName: "FieldIndex",
+              KeySchema: [
+                { AttributeName: "field", KeyType: "HASH" }, // Secondary index key
+              ],
+              Projection: {
+                ProjectionType: "ALL", // Include all attributes in the index
+              },
+              ProvisionedThroughput: {
+                ReadCapacityUnits: 5,
+                WriteCapacityUnits: 5,
+              },
+            },
+          ],
         };
 
         try {
