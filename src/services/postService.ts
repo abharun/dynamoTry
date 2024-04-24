@@ -35,11 +35,12 @@ export const update = async (updatedPost: UpdatePost) => {
   const params = {
     TableName: tableName,
     Key: { id: updatedPost.id },
-    UpdateExpression: "SET title = :title, author = :author, field = :field, content = :content",
+    UpdateExpression: "SET title = :title, author = :author, field = :field, year = :year content = :content",
     ExpressionAttributeValues: {
       ":title": updatedPost.title,
       ":author": updatedPost.author,
       ":field": updatedPost.field,
+      ":year": updatedPost.year,
       ":content": updatedPost.content,
     },
     ReturnValues: "ALL_NEW",
@@ -58,3 +59,36 @@ export const remove = async (id: string) => {
 
     return result;
 };
+
+export const query = async (query: {[key: string]: any}) => {
+  let keyCondition = "";
+  let expAttributeNames: {[key: string]: string} = {};
+  let expAttributeValues: {[key: string]: any} = {};
+  Object.entries(query).forEach(([key, value]) => {
+    keyCondition += `#${key} = :${key}`;
+    expAttributeNames[`#${key}`] = key;
+    expAttributeValues[`:${key}`] = value;
+  });
+
+  expAttributeNames[`#author`] = "author";
+  expAttributeValues[`:author`] = "dash";
+
+  console.log (keyCondition, expAttributeNames, expAttributeValues);
+
+  try {
+    const result = await postDocClient.query({
+      TableName: tableName,
+      IndexName: "FieldIndex",
+      FilterExpression: "#author = :author",
+      KeyConditionExpression: keyCondition,
+      ExpressionAttributeNames: expAttributeNames,
+      ExpressionAttributeValues: expAttributeValues,
+    }).promise();
+
+    return result.Items || null;
+  } catch(error: any) {
+    console.log(error.__type);
+    console.log(error.Message);
+    return null;
+  }
+}
