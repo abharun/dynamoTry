@@ -19,6 +19,7 @@ export const getall = async () => {
   return result;
 };
 
+// This would not be working due to timestampe: Sort key
 export const getone = async (id: string) => {
   const result = await postDocClient
     .get({
@@ -31,7 +32,8 @@ export const getone = async (id: string) => {
 
 export const insert = async (post: Post) => {
   const id = uuid();
-  const item = { id, ...post };
+  const timestampe = Date.now();
+  const item = { id, timestampe, ...post };
   await postDocClient
     .put({
       TableName: tableName,
@@ -41,6 +43,7 @@ export const insert = async (post: Post) => {
   return item;
 };
 
+// This would not be working due to timestampe: Sort key
 export const update = async (updatedPost: UpdatePost) => {
   const params = {
     TableName: tableName,
@@ -61,6 +64,7 @@ export const update = async (updatedPost: UpdatePost) => {
   return result;
 };
 
+// This would not be working due to timestampe: Sort key
 export const remove = async (id: string) => {
   const result = await postDocClient
     .delete({
@@ -73,6 +77,7 @@ export const remove = async (id: string) => {
   return result;
 };
 
+// This would not be working due to timestampe: Sort key
 export const query = async (query: { [key: string]: any }) => {
   let keyCondition = "";
   let expAttributeNames: { [key: string]: string } = {};
@@ -113,12 +118,15 @@ export const mocking = async (
   datamod: string,
   mockData: Post[]
 ) => {
-  console.log(mockData);
   try {
     const common_id = uuid();
     for (const post of mockData) {
       const id = keymod === "sep" ? uuid() : common_id;
-      const item = datamod === "value" ? { id, ...post } : { id, post };
+      const timestamp = Date.now();
+      const item =
+        datamod === "value"
+          ? { id, timestamp, ...post }
+          : { id, timestamp, post };
       console.log(item);
       await postDocClient
         .put({
