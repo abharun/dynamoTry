@@ -11,15 +11,20 @@ export const createTables = async (tableNames: string[]) => {
       if (error.code === "ResourceNotFoundException") {
         const params = {
           TableName: tbname,
-          KeySchema: [{ AttributeName: "id", KeyType: "HASH" }],
+          KeySchema: [
+            { AttributeName: "id", KeyType: "HASH" },
+            { AttributeName: "timestamp", KeyType: "RANGE" },
+          ],
           AttributeDefinitions: [
             { AttributeName: "id", AttributeType: "S" },
+            { AttributeName: "timestamp", AttributeType: "N" },
             { AttributeName: "field", AttributeType: "S" },
           ],
           ProvisionedThroughput: {
             ReadCapacityUnits: 5,
             WriteCapacityUnits: 5,
           },
+          // BillingMode: "PAY_PER_REQUEST",
           GlobalSecondaryIndexes: [
             {
               IndexName: "FieldIndex",

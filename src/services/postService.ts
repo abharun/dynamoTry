@@ -9,6 +9,10 @@ const tableName = "posts";
 export const getall = async () => {
   const result = await postDocClient.scan({
     TableName: tableName,
+    // FilterExpression: "post.title = :title",
+    // ExpressionAttributeValues: {
+    //   ":title": "HTML",
+    // }
   }).promise();
   return result;
 };
@@ -23,7 +27,8 @@ export const getone = async (id: string) => {
 
 export const insert = async (post: Post) => {
     const id = uuid();
-    const item = { id, ...post };
+    const timestamp = Date.now();
+    const item = { id, timestamp, ...post };
     await postDocClient.put({
         TableName: tableName,
         Item: item,
@@ -70,8 +75,8 @@ export const query = async (query: {[key: string]: any}) => {
     expAttributeValues[`:${key}`] = value;
   });
 
-  expAttributeNames[`#author`] = "author";
-  expAttributeValues[`:author`] = "dash";
+  // expAttributeNames[`#author`] = "author";
+  // expAttributeValues[`:author`] = "dash";
 
   console.log (keyCondition, expAttributeNames, expAttributeValues);
 
@@ -79,7 +84,7 @@ export const query = async (query: {[key: string]: any}) => {
     const result = await postDocClient.query({
       TableName: tableName,
       IndexName: "FieldIndex",
-      FilterExpression: "#author = :author",
+      // FilterExpression: "#author = :author",
       KeyConditionExpression: keyCondition,
       ExpressionAttributeNames: expAttributeNames,
       ExpressionAttributeValues: expAttributeValues,
