@@ -46,8 +46,8 @@ export const queryPost = async (req: Request, res: Response) => {
 };
 
 export const createMock = async (req: Request, res: Response) => {
-  const keymod = req.params.keymod || "sep";
-  const datamod = req.params.datamod || "value";
-  const result = await mocking(keymod, datamod, mockData);
+  const keymod = req.query.keymod || "sep";
+  const datamod = req.query.datamod || "value";
+  const result = await mocking(keymod as string, datamod as string, mockData);
   res.status(200).send(result);
 };
