@@ -1,5 +1,15 @@
 import { Request, Response } from "express";
-import { getall, getone, insert, remove, update, query } from "../services";
+import {
+  getall,
+  getone,
+  insert,
+  remove,
+  update,
+  query,
+  mocking,
+} from "../services";
+import { mockData } from "../consts/mock";
+import { v4 as uuid } from "uuid";
 
 export const getAllPosts = async (_req: Request, res: Response) => {
   const posts = await getall();
@@ -30,7 +40,14 @@ export const deletePost = async (req: Request, res: Response) => {
 };
 
 export const queryPost = async (req: Request, res: Response) => {
-  const searchQuery = {...req.body};
+  const searchQuery = { ...req.body };
   const result = await query(searchQuery);
   res.status(200).send(result);
-}
+};
+
+export const createMock = async (req: Request, res: Response) => {
+  const keymod = req.params.keymod || "sep";
+  const datamod = req.params.datamod || "value";
+  const result = await mocking(keymod, datamod, mockData);
+  res.status(200).send(result);
+};
