@@ -77,7 +77,6 @@ export const remove = async (id: string) => {
   return result;
 };
 
-// This would not be working due to timestampe: Sort key
 export const query = async (query: { [key: string]: any }) => {
   let keyCondition = "";
   let expAttributeNames: { [key: string]: string } = {};
